@@ -21,6 +21,7 @@ require('./endpoints/login.js')(app, config)
 require('./endpoints/callback.js')(app, config, maria)
 require('./endpoints/logout.js')(app, config)
 require('./endpoints/manage/settings.js')(app, config, maria)
+require('./endpoints/logs.js')(app, config, maria)
 
 app.listen(port, host, () => {
   console.log(`Listening on ${host}:${port}`)
