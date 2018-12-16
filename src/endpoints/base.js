@@ -39,7 +39,7 @@ module.exports = (app, config, db) => {
 
       var ids = []
       res.forEach((value) => {
-        ids.push(value.GUILDID)
+        ids.push(value.GUILDID.toString())
       })
 
       cb(ids)
