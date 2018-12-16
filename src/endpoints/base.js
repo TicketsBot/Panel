@@ -14,7 +14,6 @@ module.exports = (app, config, db) => {
       guilds.getGuilds(req.session.userid, db, (guilds) => {
         var adminGuilds = []
         guilds.forEach((guild) => {
-          console.log(guild)
           if(guild.owner || ids.includes(guild.id)) {
             adminGuilds.push(guild)
           }
