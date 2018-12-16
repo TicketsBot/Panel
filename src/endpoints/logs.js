@@ -1,5 +1,5 @@
 const validate = require('uuid-validate')
-const axios = require('axios')
+const https = require('https')
 const logs = require('../maria/logs.js')
 
 module.exports = (app, config, db) => {
@@ -12,14 +12,20 @@ module.exports = (app, config, db) => {
     }
 
     logs.getCdnUrl(uuid, db, (url) => {
-      axios.get(url)
-        .then((queryRes) => {
-          res.send(queryRes.data)
+      // Axios minifies any resonses
+      https.get(url, (queryRes) => {
+        var data = ''
+
+        queryRes.on('data', (chunk) => {
+          data += chunk
         })
-        .catch((err) => {
-          res.send('Failed to find log on storage servers')
-          console.log(err)
+
+        queryRes.on('end', () => {
+          res.send(data)
         })
+      }).on('error', (err) => {
+        res.send('Failed to find log on storage servers')
+      })
     })
   })
 }
