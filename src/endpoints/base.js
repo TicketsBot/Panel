@@ -23,7 +23,7 @@ module.exports = (app, config, db) => {
         res.render('index', {
           name: req.session.name,
           mainsite: config.server.mainSite,
-          isNotAdmin: ids.length == 0,
+          isNotAdmin: adminGuilds.length == 0,
           baseUrl: config.server.baseUrl,
           guilds: adminGuilds
         })
