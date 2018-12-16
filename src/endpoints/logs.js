@@ -11,6 +11,8 @@ module.exports = (app, config, db) => {
       return
     }
 
+    res.set('Content-Type', 'text/plain')
+
     logs.getCdnUrl(uuid, db, (url) => {
       // Axios minifies any resonses
       https.get(url, (queryRes) => {
