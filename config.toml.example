@@ -1,0 +1,21 @@
+[server]
+host="0.0.0.0"
+port=3000
+baseUrl="http://localhost:3000"
+mainSite="https://ticketsbot.net"
+  [server.ratelimit]
+  window=10
+  max=600
+  [server.session]
+  database="session"
+
+[oauth]
+id=""
+secret=""
+
+[mariadb]
+host="localhost"
+username=""
+password=""
+database="tickets"
+threads=5
