@@ -27,5 +27,18 @@ module.exports = {
         cb(res)
       }
     })
+  },
+
+  getGuildFromUUID: (uuid, db, cb) => {
+    var query = "SELECT GUILDID FROM ticketarchive WHERE UUID=?;"
+    query = mysql.format(query, [uuid])
+
+    db.query(query, (err, res, fields) => {
+      if(res === undefined) {
+        cb(-1)
+      } else {
+        cb(res[0].GUILDID)
+      }
+    })
   }
 }

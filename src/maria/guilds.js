@@ -30,5 +30,28 @@ module.exports = {
         console.log(err)
       }
     })
+  },
+
+  isAdmin: (guildId, userId, db, cb) => {
+    var query = "SELECT GUILDID FROM permissions WHERE GUILDID=? AND USERID=? AND ISADMIN=1;"
+    query = mysql.format(query, [guildId, userId])
+
+    db.query(query, (err, res, fields) => {
+      cb(res !== undefined && res.length > 0)
+    })
+  },
+
+  getOwnedGuilds: (guildId, userId, db, cb) => {
+    module.exports.getGuilds(userId, db, (guilds) => {
+      cb(guilds.filter(guild => guild.owner).map(guild => guild.id))
+    })
+  },
+
+  isPermitted: (guildId, userId, db, cb) => {
+    guilds.getOwnedGuilds(guildId, req.session.userid, db, (ownedGuilds) => {
+      guilds.isAdmin(guildId, req.session.userid, db, (admin) => {
+        cb(admin && ownedGuilds.includes(guildId))
+      })
+    })
   }
 }

@@ -15,6 +15,9 @@ module.exports = (app, config, db) => {
         var adminGuilds = []
         guilds.forEach((guild) => {
           if(guild.owner || ids.includes(guild.id)) {
+            for(var property in guild) {
+              guild.proper
+            }
             adminGuilds.push(guild)
           }
         })
