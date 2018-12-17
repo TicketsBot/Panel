@@ -10,25 +10,43 @@
     </div>
   </div>
 
-  <table class="striped centered">
-    <thead>
-      <tr>
-        <th>Ticket ID</th>
-        <th>User</th>
-        <th>User ID</th>
-        <th>Log URL</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each logs}}
-        {{{baseUrl}}}
+  <div class="row">
+    <div class="col s12">
+    <table class="striped centered">
+      <thead>
         <tr>
-          <td>{{TICKETID}}</td>
-          <td>{{USERNAME}}</td>
-          <td>{{USERID}}</td>
-          <td><a href="{{baseUrl}}/logs/{{UUID}}">{{UUID}}</a></td>
+          <th>Ticket ID</th>
+          <th>User</th>
+          <th>User ID</th>
+          <th>Log URL</th>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {{#each logs}}
+          {{{baseUrl}}}
+          <tr>
+            <td>{{TICKETID}}</td>
+            <td>{{USERNAME}}</td>
+            <td>{{USERID}}</td>
+            <td><a href="{{baseUrl}}/logs/{{UUID}}">{{UUID}}</a></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="row center-align">
+    <div class="col s12 center-align">
+      <p class="center-align">Pages</p>
+      <ul class="pagination center-align">
+        {{#if isPageOne}}
+          <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+        {{else}}
+          <li class="waves-effect"><a href="/manage/{{guildId}}/logs/page/{{previousPage}}"><i class="material-icons">chevron_left</i></a></li>
+        {{/if}}
+        <li class="waves-effect"><a href="/manage/{{guildId}}/logs/page/{{nextPage}}"><i class="material-icons">chevron_right</i></a></li>
+      </ul>
+    </div>
+  </div>
 </div>

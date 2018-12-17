@@ -39,7 +39,10 @@ module.exports = (app, config, db) => {
         mainsite: config.server.mainSite,
         baseUrl: config.server.baseUrl,
         guildId: guildId,
-        logs: displayedLogs.reverse()
+        logs: displayedLogs.reverse(),
+        isPageOne: page == 1,
+        previousPage: page - 1,
+        nextPage: page + 1
       })
     })
   })
