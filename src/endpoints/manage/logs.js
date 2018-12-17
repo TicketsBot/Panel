@@ -32,9 +32,9 @@ module.exports = (app, config, db) => {
         return
       }
 
-      var pageLimit = 30
       var displayedLogs = []
-      logsdb.getAllLogs(guildId, db, (logs) => {
+      var pageLimit = 30
+      logsdb.getLogs(guildId, req.query.ticketid, req.query.username, req.query.userid, db, (logs) => {
         for(var i = (page - 1) * pageLimit; i < (page - 1) * pageLimit + pageLimit; i++) {
           if(i >= logs.length) break
           else displayedLogs.push(logs[i])

@@ -15,9 +15,28 @@ module.exports = {
     })
   },
 
-  getAllLogs: (guildId, db, cb) => {
-    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? ORDER BY TICKETID DESC;"
-    query = mysql.format(query, [guildId])
+  getLogs: (guildId, ticketId, username, userId, db, cb) => {
+    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=?"
+
+    var variables = [guildId]
+
+    if(ticketId !== undefined && ticketId != "") {
+      query += " AND TICKETID=? "
+      variables.push(ticketId)
+    }
+
+    if(username !== undefined && username != "") {
+      query += " AND USERNAME LIKE ? "
+      variables.push('%' + username + '%')
+    }
+
+    if(userId !== undefined && userId != "") {
+      query += " AND USERID=? "
+      variables.push(userId)
+    }
+
+    query += "ORDER BY TICKETID DESC;"
+    query = mysql.format(query, variables)
 
     db.query(query, (err, res, fields) => {
       if(res === undefined) {
@@ -25,6 +44,20 @@ module.exports = {
       }
       else {
         cb(res)
+      }
+    })
+  },
+
+  getTicketById: (guildId, ticketId, db, cb) => {
+    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? AND TICKETID=?;"
+    query = mysql.format(query, [guildId, ticketId])
+
+    db.query(query, (err, res, fields) => {
+      if(res === undefined) {
+        cb([])
+      }
+      else {
+        cb([res[0]])
       }
     })
   },
