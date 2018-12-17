@@ -7,6 +7,7 @@ module.exports = (config) => {
     password: config.mariadb.password,
     database: config.mariadb.database,
     connectionLimit: config.mariadb.threads,
+    supportBigNumbers: true,
     bigNumberStrings: true
   })
   return pool
