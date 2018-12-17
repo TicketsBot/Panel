@@ -13,5 +13,19 @@ module.exports = {
         cb(res[0].CDNURL)
       }
     })
+  },
+
+  getAllLogs: (guildId, db, cb) => {
+    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? ORDER BY TICKETID DESC";
+    query = mysql.format(query, [guildId])
+
+    db.query(query, (err, res, fields) => {
+      if(res === undefined) {
+        cb([])
+      }
+      else {
+        cb(res)
+      }
+    })
   }
 }
