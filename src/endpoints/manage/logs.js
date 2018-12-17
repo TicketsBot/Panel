@@ -32,7 +32,7 @@ module.exports = (app, config, db) => {
         return
       }
 
-      if(req.query.userid !== undefined && isNaN(parseInt(page, 10))) {
+      if(req.query.userid !== undefined && isNaN(parseFloat(page))) {
         req.query.userid = ""
       }
 

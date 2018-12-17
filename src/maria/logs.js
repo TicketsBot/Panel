@@ -16,7 +16,7 @@ module.exports = {
   },
 
   getLogs: (guildId, ticketId, username, userId, db, cb) => {
-    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=?"
+    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? "
 
     var variables = [guildId]
 
@@ -32,11 +32,13 @@ module.exports = {
 
     if(userId !== undefined && userId != "") {
       query += " AND USERID=? "
-      variables.push(parseInt(userId, 10))
+      variables.push(parseFloat(userId))
     }
 
     query += "ORDER BY TICKETID DESC;"
     query = mysql.format(query, variables)
+
+    console.log(query)
 
     db.query(query, (err, res, fields) => {
       if(res === undefined) {
