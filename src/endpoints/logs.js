@@ -23,7 +23,7 @@ module.exports = (app, config, db) => {
     logs.getGuildFromUUID(uuid, db, (guildId) => {
       guilds.isPermitted(guildId, req.session.userId, db, (permitted) => {
         if(!permitted) {
-          res.redirect('/'')
+          res.redirect('/')
           return
         }
 
