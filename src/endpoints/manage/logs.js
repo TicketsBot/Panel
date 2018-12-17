@@ -32,6 +32,10 @@ module.exports = (app, config, db) => {
         return
       }
 
+      if(req.query.userid !== undefined && isNaN(parseInt(page, 10))) {
+        req.query.userid = ""
+      }
+
       var displayedLogs = []
       var pageLimit = 30
       logsdb.getLogs(guildId, req.query.ticketid, req.query.username, req.query.userid, db, (logs) => {
