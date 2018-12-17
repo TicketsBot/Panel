@@ -48,8 +48,8 @@ module.exports = {
   },
 
   isPermitted: (guildId, userId, db, cb) => {
-    guilds.getOwnedGuilds(guildId, req.session.userid, db, (ownedGuilds) => {
-      guilds.isAdmin(guildId, req.session.userid, db, (admin) => {
+    modules.exports.getOwnedGuilds(guildId, req.session.userid, db, (ownedGuilds) => {
+      modules.exports.isAdmin(guildId, req.session.userid, db, (admin) => {
         cb(admin && ownedGuilds.includes(guildId))
       })
     })
