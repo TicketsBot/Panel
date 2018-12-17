@@ -16,7 +16,7 @@ module.exports = {
   },
 
   getAllLogs: (guildId, db, cb) => {
-    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? ORDER BY TICKETID DESC";
+    var query = "SELECT UUID, USERID, USERNAME, TICKETID FROM ticketarchive WHERE GUILDID=? ORDER BY TICKETID DESC;"
     query = mysql.format(query, [guildId])
 
     db.query(query, (err, res, fields) => {

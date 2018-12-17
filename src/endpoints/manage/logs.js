@@ -13,7 +13,7 @@ module.exports = (app, config, db) => {
     var guildId = req.params.guildid
     var page = req.params.page
 
-    guilds.isPermitted(guildId, req.session.userId, db, (permitted) => {
+    guilds.isPermitted(guildId, req.session.userid, db, (permitted) => {
       if(!permitted) {
         res.redirect('/')
         return
