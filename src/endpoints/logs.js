@@ -1,6 +1,6 @@
 const validate = require('uuid-validate')
 const axios = require('axios')
-const isLoggedIn = require('../../utils/isloggedin.js')
+const isLoggedIn = require('../utils/isloggedin.js')
 const logs = require('../maria/logs.js')
 const guilds = require('../maria/guilds.js')
 
