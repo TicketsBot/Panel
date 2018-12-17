@@ -50,7 +50,7 @@ module.exports = {
   isPermitted: (guildId, userId, db, cb) => {
     module.exports.getOwnedGuilds(guildId, userId, db, (ownedGuilds) => {
       module.exports.isAdmin(guildId, userId, db, (admin) => {
-        cb(admin && ownedGuilds.includes(guildId.toString()))
+        cb(admin || ownedGuilds.includes(guildId.toString()))
       })
     })
   }
