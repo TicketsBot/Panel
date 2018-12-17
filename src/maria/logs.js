@@ -32,7 +32,7 @@ module.exports = {
 
     if(userId !== undefined && userId != "") {
       query += " AND USERID=? "
-      variables.push(parseFloat(userId))
+      variables.push(userId)
     }
 
     query += "ORDER BY TICKETID DESC;"
