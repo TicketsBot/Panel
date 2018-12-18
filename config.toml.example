@@ -19,3 +19,7 @@ username=""
 password=""
 database="tickets"
 threads=5
+
+[bot]
+key=""
+httpServers=[]

@@ -2,6 +2,7 @@ const mysql = require('mysql')
 const isLoggedIn = require('../../utils/isloggedin.js')
 const guilds = require('../../maria/guilds.js')
 const settings = require('../../maria/settings.js')
+const mediator = require('../../mediator.js')
 
 module.exports = (app, config, db) => {
   app.get('/manage/:guildid/settings', (req, res) => {
@@ -18,6 +19,8 @@ module.exports = (app, config, db) => {
         return
       }
 
+      var updated = false
+
       var invalidPrefix = false
       if(req.query.prefix !== undefined) {
         var prefix = req.query.prefix
@@ -26,6 +29,7 @@ module.exports = (app, config, db) => {
         }
         else {
           settings.setPrefix(guildId, prefix, db)
+          updated = true
         }
       }
 
@@ -37,7 +41,12 @@ module.exports = (app, config, db) => {
         }
         else {
           settings.setWelcomeMessage(guildId, message, db)
+          updated = true
         }
+      }
+
+      if(updated) {
+        mediator.purgeCaches(guildId)
       }
 
       settings.getPrefix(guildId, db, (prefix) => {
