@@ -46,7 +46,7 @@ module.exports = (app, config, db) => {
       }
 
       if(updated) {
-        mediator.purgeCaches(guildId)
+        mediator.purgeCaches(config, guildId)
       }
 
       settings.getPrefix(guildId, db, (prefix) => {
