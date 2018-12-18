@@ -50,7 +50,17 @@ module.exports = (app, config, db) => {
       }
 
       settings.getPrefix(guildId, db, (prefix) => {
+        // DB doesn't update fast enough to be able to select new values
+        if(req.query.prefix !== undefined && !invalidPrefix) {
+          prefix = req.query.prefix
+        }
+
         settings.getWelcomeMessage(guildId, db, (welcomeMessage) => {
+          // DB doesn't update fast enough to be able to select new values
+          if(req.query.welcomeMessage !== undefined && !invalidMessage) {
+            welcomeMessage = req.query.welcomeMessage
+          }
+
           res.render('settings', {
             name: req.session.name,
             mainsite: config.server.mainSite,
