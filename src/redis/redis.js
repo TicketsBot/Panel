@@ -43,6 +43,6 @@ module.exports = {
       callbacks[guild] = [cb]
     }
 
-    redis.publish('inbound:guild:purgecache', guild)
+    redis.publish('inbound:channelcategory:list', guild)
   }
 }
