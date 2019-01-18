@@ -3,8 +3,9 @@ const isLoggedIn = require('../../utils/isloggedin.js')
 const guilds = require('../../maria/guilds.js')
 const settings = require('../../maria/settings.js')
 const mediator = require('../../mediator.js')
+const Redis = require('../../redis/redis.js')
 
-module.exports = (app, config, db) => {
+module.exports = (app, config, db, redis) => {
   app.get('/manage/:guildid/settings', (req, res) => {
     if(!isLoggedIn(req)) {
       res.redirect('/login')
@@ -61,15 +62,39 @@ module.exports = (app, config, db) => {
             welcomeMessage = req.query.welcomeMessage
           }
 
-          res.render('settings', {
-            name: req.session.name,
-            mainsite: config.server.mainSite,
-            baseUrl: config.server.baseUrl,
-            guildId: guildId,
-            prefix: prefix,
-            welcomeMessage: welcomeMessage,
-            invalidPrefix: invalidPrefix,
-            invalidMessage: invalidMessage
+          settings.getChannelCategory(guildId, db, (categoryId) => {
+            Redis.list(redis, guildId, (categories) => {
+              // Update channel category
+
+              var validCategory = false
+              categories.categories.forEach((obj) => {
+                if(obj.id == req.query.category) {
+                  validCategory = true
+                }
+              })
+              if(req.query.category !== undefined && validCategory) {
+                categoryId = req.query.category
+                settings.setChannelCategory(guildId, categoryId, db)
+              }
+
+              var updated = []
+              categories.categories.forEach((obj) => {
+                obj.active = categoryId == obj.id
+                updated.push(obj)
+              })
+
+              res.render('settings', {
+                name: req.session.name,
+                mainsite: config.server.mainSite,
+                baseUrl: config.server.baseUrl,
+                guildId: guildId,
+                prefix: prefix,
+                welcomeMessage: welcomeMessage,
+                invalidPrefix: invalidPrefix,
+                invalidMessage: invalidMessage,
+                categories: updated
+              })
+            })
           })
         })
       })

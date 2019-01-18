@@ -17,6 +17,7 @@
     "express-rate-limit": "^3.3.2",
     "express-session": "^1.15.6",
     "handlebars": "^4.0.12",
+    "ioredis": "^4.3.0",
     "mysql": "^2.16.0",
     "nodejs-base64": "^1.0.3",
     "nodemon": "^1.18.9",

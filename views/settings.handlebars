@@ -1,4 +1,10 @@
 <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, {});
+  });
+
   {{#if invalidPrefix}}
     M.toast({html: 'Prefixes must be between 1 and 8 characters'})
   {{/if}}
@@ -30,6 +36,21 @@
       <div class="input-field col s12">
         <p>Welcome Message</p>
         <textarea id="welcomeMessage" name="welcomeMessage" class="materialize-textarea">{{welcomeMessage}}</textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <p>Channel Category</p>
+        <select name="category">
+          {{#each categories}}
+            {{#if active}}
+              <option value="{{id}}" selected>{{name}}</option>
+            {{else}}
+              <option value="{{id}}">{{name}}</option>
+            {{/if}}
+          {{/each}}
+        </select>
       </div>
     </div>
 

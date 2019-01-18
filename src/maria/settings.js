@@ -50,5 +50,30 @@ module.exports = {
         console.log(err)
       }
     })
+  },
+
+  getChannelCategory: (guildId, db, cb) => {
+    var query = 'SELECT CATEGORYID FROM channelcategory WHERE GUILDID=?;'
+    query = mysql.format(query, [guildId])
+
+    db.query(query, (err, res, fields) => {
+      if(res === undefined || res.length == 0) {
+        cb(-1)
+      }
+      else {
+        cb(res[0].CATEGORYID)
+      }
+    })
+  },
+
+  setChannelCategory: (guildId, categoryId, db) => {
+    var query = 'INSERT INTO channelcategory(GUILDID, CATEGORYID) VALUES(?, ?) ON DUPLICATE KEY UPDATE `CATEGORYID`=VALUES(`CATEGORYID`);'
+    query = mysql.format(query, [guildId, categoryId])
+
+    db.query(query, (err, res, fields) => {
+      if(err) {
+        console.log(err)
+      }
+    })
   }
 }
