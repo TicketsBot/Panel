@@ -44,5 +44,18 @@ module.exports = {
     }
 
     redis.publish('inbound:channelcategory:list', guild)
+
+    setTimeout(() => {
+      if(guild in callbacks) {
+        callbacks[guild].forEach((element) => {
+          if(element === cb) {
+            cb({
+              guildId: guild,
+              categories: []
+            })
+          }
+        })
+      }
+    }, 3000)
   }
 }

@@ -75,5 +75,31 @@ module.exports = {
         console.log(err)
       }
     })
+  },
+
+  getTicketLimit: (guildId, db, cb) => {
+    var query = 'SELECT TICKETLIMIT FROM ticketlimit WHERE GUILDID=?;'
+    query = mysql.format(query, [guildId])
+
+
+    db.query(query, (err, res, fields) => {
+      if(res === undefined || res.length == 0) {
+        cb(5)
+      }
+      else {
+        cb(res[0].TICKETLIMIT)
+      }
+    })
+  },
+
+  setTicketLimit: (guildId, limit, db) => {
+    var query = 'INSERT INTO ticketlimit(GUILDID, TICKETLIMIT) VALUES(?, ?) ON DUPLICATE KEY UPDATE `TICKETLIMIT` = VALUES(`TICKETLIMIT`);'
+    query = mysql.format(query, [guildId, limit])
+
+    db.query(query, (err, res, fields) => {
+      if(err) {
+        console.log(err)
+      }
+    })
   }
 }

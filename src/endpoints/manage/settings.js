@@ -46,6 +46,18 @@ module.exports = (app, config, db, redis) => {
         }
       }
 
+      var invalidTicketLimit = false
+      if(req.query.ticketlimit !== undefined) {
+        var limit = parseInt(req.query.ticketlimit)
+        if(isNaN(limit) || limit > 10 || limit < 1) {
+          invalidTicketLimit = true
+        }
+        else {
+          settings.setTicketLimit(guildId, limit, db)
+          updated = true
+        }
+      }
+
       if(updated) {
         mediator.purgeCaches(config, guildId)
       }
@@ -62,37 +74,47 @@ module.exports = (app, config, db, redis) => {
             welcomeMessage = req.query.welcomeMessage
           }
 
-          settings.getChannelCategory(guildId, db, (categoryId) => {
-            Redis.list(redis, guildId, (categories) => {
-              // Update channel category
+          settings.getTicketLimit(guildId, db, (ticketLimit) => {
+            // DB doesn't update fast enough to be able to select new v
+            if(req.query.ticketlimit !== undefined && !invalidTicketLimit) {
+              ticketLimit = req.query.ticketlimit
+            }
 
-              var validCategory = false
-              categories.categories.forEach((obj) => {
-                if(obj.id == req.query.category) {
-                  validCategory = true
+
+            settings.getChannelCategory(guildId, db, (categoryId) => {
+              Redis.list(redis, guildId, (categories) => {
+                // Update channel category
+
+                var validCategory = false
+                categories.categories.forEach((obj) => {
+                  if(obj.id == req.query.category) {
+                    validCategory = true
+                  }
+                })
+                if(req.query.category !== undefined && validCategory) {
+                  categoryId = req.query.category
+                  settings.setChannelCategory(guildId, categoryId, db)
+                  mediator.purgeCaches(config, guildId)
                 }
-              })
-              if(req.query.category !== undefined && validCategory) {
-                categoryId = req.query.category
-                settings.setChannelCategory(guildId, categoryId, db)
-              }
 
-              var updated = []
-              categories.categories.forEach((obj) => {
-                obj.active = categoryId == obj.id
-                updated.push(obj)
-              })
+                var updated = []
+                categories.categories.forEach((obj) => {
+                  obj.active = categoryId == obj.id
+                  updated.push(obj)
+                })
 
-              res.render('settings', {
-                name: req.session.name,
-                mainsite: config.server.mainSite,
-                baseUrl: config.server.baseUrl,
-                guildId: guildId,
-                prefix: prefix,
-                welcomeMessage: welcomeMessage,
-                invalidPrefix: invalidPrefix,
-                invalidMessage: invalidMessage,
-                categories: updated
+                res.render('settings', {
+                  name: req.session.name,
+                  mainsite: config.server.mainSite,
+                  baseUrl: config.server.baseUrl,
+                  guildId: guildId,
+                  prefix: prefix,
+                  welcomeMessage: welcomeMessage,
+                  invalidPrefix: invalidPrefix,
+                  invalidMessage: invalidMessage,
+                  ticketLimit: ticketLimit,
+                  categories: updated
+                })
               })
             })
           })

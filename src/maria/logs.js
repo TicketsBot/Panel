@@ -38,8 +38,6 @@ module.exports = {
     query += "ORDER BY TICKETID DESC;"
     query = mysql.format(query, variables)
 
-    console.log(query)
-
     db.query(query, (err, res, fields) => {
       if(res === undefined) {
         cb([])
