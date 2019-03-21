@@ -1,4 +1,4 @@
-const mysql = require('mysql')
+const mysql = require('mysql2')
 
 module.exports = {
   getCdnUrl: (uuid, db, cb) => {

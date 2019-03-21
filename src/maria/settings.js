@@ -1,4 +1,4 @@
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const { base64encode, base64decode } = require('nodejs-base64')
 
 module.exports = {
@@ -77,7 +77,22 @@ module.exports = {
     })
   },
 
-  getTicketLimit: (guildId, db, cb) => {
+  getTicketLimit: async function(guildId, db) {
+    var promisePool = db.promise()
+
+    var query = 'SELECT TICKETLIMIT FROM ticketlimit WHERE GUILDID=?;'
+    query = mysql.format(query, [guildId])
+
+    var [res, fields] = await promisePool.query(query)
+
+    if(res === undefined || res.length == 0) {
+      return 5
+    }
+    else {
+      return res[0].TICKETLIMIT
+    }
+  },
+  /*getTicketLimit: (guildId, db, cb) => {
     var query = 'SELECT TICKETLIMIT FROM ticketlimit WHERE GUILDID=?;'
     query = mysql.format(query, [guildId])
 
@@ -90,7 +105,7 @@ module.exports = {
         cb(res[0].TICKETLIMIT)
       }
     })
-  },
+  },*/
 
   setTicketLimit: (guildId, limit, db) => {
     var query = 'INSERT INTO ticketlimit(GUILDID, TICKETLIMIT) VALUES(?, ?) ON DUPLICATE KEY UPDATE `TICKETLIMIT` = VALUES(`TICKETLIMIT`);'

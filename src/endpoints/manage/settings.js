@@ -5,8 +5,8 @@ const settings = require('../../maria/settings.js')
 const mediator = require('../../mediator.js')
 const Redis = require('../../redis/redis.js')
 
-module.exports = (app, config, db, redis) => {
-  app.get('/manage/:guildid/settings', (req, res) => {
+module.exports = async function(app, config, db, redis) {
+  app.get('/manage/:guildid/settings', async function(req, res) {
     if(!isLoggedIn(req)) {
       res.redirect('/login')
       return
@@ -74,47 +74,44 @@ module.exports = (app, config, db, redis) => {
             welcomeMessage = req.query.welcomeMessage
           }
 
-          settings.getTicketLimit(guildId, db, (ticketLimit) => {
-            // DB doesn't update fast enough to be able to select new v
-            if(req.query.ticketlimit !== undefined && !invalidTicketLimit) {
-              ticketLimit = req.query.ticketlimit
-            }
+          var ticketLimit = settings.getTicketLimit(guildId, db)
+          if(req.query.ticketlimit !== undefined && !invalidTicketLimit) {
+            ticketLimit = req.query.ticketlimit
+          }
 
+          settings.getChannelCategory(guildId, db, (categoryId) => {
+            Redis.list(redis, guildId, (categories) => {
+              // Update channel category
 
-            settings.getChannelCategory(guildId, db, (categoryId) => {
-              Redis.list(redis, guildId, (categories) => {
-                // Update channel category
-
-                var validCategory = false
-                categories.categories.forEach((obj) => {
-                  if(obj.id == req.query.category) {
-                    validCategory = true
-                  }
-                })
-                if(req.query.category !== undefined && validCategory) {
-                  categoryId = req.query.category
-                  settings.setChannelCategory(guildId, categoryId, db)
-                  mediator.purgeCaches(config, guildId)
+              var validCategory = false
+              categories.categories.forEach((obj) => {
+                if(obj.id == req.query.category) {
+                  validCategory = true
                 }
+              })
+              if(req.query.category !== undefined && validCategory) {
+                categoryId = req.query.category
+                settings.setChannelCategory(guildId, categoryId, db)
+                mediator.purgeCaches(config, guildId)
+              }
 
-                var updated = []
-                categories.categories.forEach((obj) => {
-                  obj.active = categoryId == obj.id
-                  updated.push(obj)
-                })
+              var updated = []
+              categories.categories.forEach((obj) => {
+                obj.active = categoryId == obj.id
+                updated.push(obj)
+              })
 
-                res.render('settings', {
-                  name: req.session.name,
-                  mainsite: config.server.mainSite,
-                  baseUrl: config.server.baseUrl,
-                  guildId: guildId,
-                  prefix: prefix,
-                  welcomeMessage: welcomeMessage,
-                  invalidPrefix: invalidPrefix,
-                  invalidMessage: invalidMessage,
-                  ticketLimit: ticketLimit,
-                  categories: updated
-                })
+              res.render('settings', {
+                name: req.session.name,
+                mainsite: config.server.mainSite,
+                baseUrl: config.server.baseUrl,
+                guildId: guildId,
+                prefix: prefix,
+                welcomeMessage: welcomeMessage,
+                invalidPrefix: invalidPrefix,
+                invalidMessage: invalidMessage,
+                ticketLimit: ticketLimit,
+                categories: updated
               })
             })
           })

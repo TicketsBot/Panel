@@ -1,4 +1,4 @@
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const { base64encode, base64decode } = require('nodejs-base64')
 
 module.exports = {
